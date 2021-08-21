@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "books")
 public class Book {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	private String author;
@@ -25,6 +26,9 @@ public class Book {
 	
 	private String short_description;
 	
+	@ManyToOne
+	private Category category;
+	
 	@CreationTimestamp
 	private Timestamp created_at;
 	
@@ -33,19 +37,16 @@ public class Book {
 	
 	public Book() {}
 	
-	public Book(String author, String title, String short_description) {
+	public Book(String author, String title, String short_description, Category category) {
 		super();
 		this.author = author;
 		this.title = title;
 		this.short_description = short_description;
+		this.category = category;
 	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getAuthor() {
@@ -74,6 +75,14 @@ public class Book {
 
 	public String getShort_description() {
 		return short_description;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public void setShort_description(String short_description) {
