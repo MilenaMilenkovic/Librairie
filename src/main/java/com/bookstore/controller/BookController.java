@@ -1,4 +1,4 @@
-package com.bookstore;
+package com.bookstore.controller;
 
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.bookstore.ResponseMessage;
+import com.bookstore.model.Book;
+import com.bookstore.repository.BookRepository;
 
 @RestController
 public class BookController {

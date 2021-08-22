@@ -1,4 +1,4 @@
-package com.bookstore;
+package com.bookstore.model;
 
 import java.sql.Timestamp;
 import javax.persistence.Entity;
