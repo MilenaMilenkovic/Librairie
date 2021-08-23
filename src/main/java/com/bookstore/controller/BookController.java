@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookstore.ResponseMessage;
@@ -24,8 +25,12 @@ public class BookController {
 	}
 	
 	@GetMapping("/books")
-	public Iterable<Book> index() {
-		return repository.findAll();
+	public Iterable<Book> index(@RequestParam Optional<String> category) {
+		if (category.isPresent()) {
+			return repository.categorized(category.get());
+		} else {
+			return repository.findAll();
+		}
 	}
 	
 	@GetMapping("/books/{id}")
