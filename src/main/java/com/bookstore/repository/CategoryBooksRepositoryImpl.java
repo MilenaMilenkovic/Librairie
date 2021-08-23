@@ -13,17 +13,17 @@ import javax.persistence.EntityManager;
 
 
 public class CategoryBooksRepositoryImpl implements CategoryBooksRepository {
-	 
+
     @Autowired
     private EntityManager entityManager;
-    
+
     @Autowired
  	private CategoryRepository categoryRepository;
 
     @Override
     public Iterable<Book> categorized(String categoryName) {
         List<Category> categories = categoryRepository.named(categoryName);
-    	        
+
         return CategoryBooksQuery.call(entityManager, categories);
-    } 
+    }
 }
