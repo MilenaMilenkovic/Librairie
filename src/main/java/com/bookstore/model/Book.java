@@ -34,7 +34,7 @@ public class Book extends Model {
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	@NotNull(message="must exist")
+	@NotNull(message = "must exist")
 	private Category category;
 	
 	@CreationTimestamp

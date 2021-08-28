@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.bookstore.model.Book;
 import com.bookstore.model.Category;
@@ -13,8 +13,7 @@ import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
 
 
-// TODO: Find out less generic annotation
-@Component 
+@Service
 public class BookInteractor {
 	@Autowired
 	private BookRepository repository;
@@ -26,7 +25,6 @@ public class BookInteractor {
 	
 	public boolean create(Book book) {
   	  	subject = new Book();
-  	  	
   	  	subject.setCategory(categoryOf(book));
 		subject.setAuthor(book.getAuthor());
 		subject.setTitle(book.getTitle());

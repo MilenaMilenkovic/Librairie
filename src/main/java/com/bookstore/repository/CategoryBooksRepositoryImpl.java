@@ -8,6 +8,7 @@ import com.bookstore.model.Category;
 import com.bookstore.query.mysql8.CategoryBooksQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
@@ -21,6 +22,7 @@ public class CategoryBooksRepositoryImpl implements CategoryBooksRepository {
  	private CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Iterable<Book> categorized(String categoryName) {
         List<Category> categories = categoryRepository.named(categoryName);
 
