@@ -1,10 +1,6 @@
 package com.bookstore.interactor;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.bookstore.model.Book;
@@ -14,15 +10,10 @@ import com.bookstore.repository.CategoryRepository;
 
 
 @Service
-public class BookInteractor {
-	@Autowired
-	private BookRepository repository;
-	
+public class BookInteractor extends Interactor<Book, BookRepository>{
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
-	private Book subject;
-	
+		
 	public boolean create(Book book) {
   	  	subject = new Book();
   	  	subject.setCategory(categoryOf(book));
@@ -30,7 +21,7 @@ public class BookInteractor {
 		subject.setTitle(book.getTitle());
   	  	subject.setShort_description(book.getShort_description());
 		
-		return save();
+  	  	return this.save();
 	}	
 	
 	public boolean update(Book book, Book update) {
@@ -48,19 +39,7 @@ public class BookInteractor {
 		if (update.getShort_description() != null)
   	  		subject.setShort_description(update.getShort_description());
 		
-		return save();
-	}
-	
-	public Map<String, List<String>> getErrors() {
-		return subject.getErrors();
-	}
-	
-	private boolean save() {  	  
-  	  	if (!subject.isValid())
-  	  		return false;
-  	  	
-  	  	repository.save(subject);
-  		return true;
+		return this.save();
 	}
 	
 	private Category categoryOf(Book book) {

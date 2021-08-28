@@ -8,6 +8,10 @@ import com.bookstore.model.Category;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
 public class CategoryBooksQuery {
 
 	private List<Category> categories;
@@ -17,6 +21,7 @@ public class CategoryBooksQuery {
 		this.categories = categories;
 	}
 
+	@Transactional(readOnly = true)
 	public static List<Book> call(EntityManager entityManager, List<Category> categories) {
 		CategoryBooksQuery queryObject = new CategoryBooksQuery(categories);
 
