@@ -9,6 +9,7 @@ import com.bookstore.model.Book;
 public class BookDecorator {
 	private Book subject;
 	
+	// TODO: Make this code reusable
 	public static List<BookDecorator> list(Iterable<Book> books) {
 		return StreamSupport.stream(books.spliterator(), false)
 							.map(BookDecorator::new)

@@ -8,6 +8,10 @@ public class ResponseMessage {
 		this.message = message;
 	}
 	
+	public static ResponseMessage notFound() {
+		return new ResponseMessage("Record not found.");
+	}
+	
 	public String getMessage() {
 		return message;
 	}

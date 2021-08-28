@@ -1,19 +1,25 @@
 package com.bookstore.model;
 
 import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book extends Model {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -27,6 +33,8 @@ public class Book {
 	private String short_description;
 	
 	@ManyToOne
+	@JoinColumn(name = "category_id")
+	@NotNull(message="must exist")
 	private Category category;
 	
 	@CreationTimestamp
@@ -47,6 +55,21 @@ public class Book {
 
 	public Long getId() {
 		return id;
+	}
+	
+	@JsonProperty("category_id")
+	public void setCategory(Long id) {
+		this.category = new Category();
+		this.category.setId(id);
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+
+	public Category getCategory() {
+		return category;
 	}
 
 	public String getAuthor() {
@@ -77,14 +100,6 @@ public class Book {
 		return short_description;
 	}
 
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
 	public void setShort_description(String short_description) {
 		this.short_description = short_description;
 	}
@@ -96,4 +111,5 @@ public class Book {
 	public Timestamp getUpdated_at() {
 		return updated_at;
 	}
+	
 }
