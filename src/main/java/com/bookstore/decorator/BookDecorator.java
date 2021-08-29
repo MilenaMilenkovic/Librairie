@@ -6,9 +6,7 @@ import java.util.stream.StreamSupport;
 
 import com.bookstore.model.Book;
 
-public class BookDecorator {
-	private Book subject;
-	
+public class BookDecorator extends Decorator<Book> {	
 	// TODO: Make this code reusable
 	public static List<BookDecorator> list(Iterable<Book> books) {
 		return StreamSupport.stream(books.spliterator(), false)
@@ -17,8 +15,7 @@ public class BookDecorator {
 	}
 
 	public BookDecorator(Book subject) {
-		super();
-		this.subject = subject;
+		super(subject);
 	}
 	
 	public String getTitle() {

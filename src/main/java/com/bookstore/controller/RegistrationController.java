@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookstore.ResponseMessage;
+import com.bookstore.controller.exception.EntityValidationException;
 import com.bookstore.interactor.UserInteractor;
 import com.bookstore.model.User;
 
@@ -18,13 +19,10 @@ public class RegistrationController {
 	
 	@PostMapping("/registration")
 	public  ResponseEntity<Object> create(@RequestBody User user) {
-		boolean created = interactor.create(user);
-
-		if (created) {
-			return ResponseEntity.ok(new ResponseMessage("User is successfully created."));
-		} else {
-			return ResponseEntity.badRequest().body(interactor.getErrors());
-		}
+		if (!interactor.create(user))
+			throw new EntityValidationException(interactor.getErrors());
+		
+		return ResponseEntity.ok(new ResponseMessage(("User is successfully created.")));
 	}
 
 }

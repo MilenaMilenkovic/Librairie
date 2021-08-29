@@ -1,9 +1,9 @@
 package com.bookstore.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bookstore.ResponseMessage;
+import com.bookstore.controller.exception.EntityValidationException;
+import com.bookstore.controller.exception.RecordNotFoundException;
 import com.bookstore.decorator.BookDecorator;
 import com.bookstore.interactor.BookInteractor;
 import com.bookstore.model.Book;
@@ -29,7 +31,7 @@ public class BookController {
 	private BookInteractor interactor;
 
 	@GetMapping("/books")
-	public ResponseEntity<Object> index(@RequestParam Optional<String> category) {
+	public List<BookDecorator> index(@RequestParam Optional<String> category) {
 		Iterable<Book> books;
 		
 		if (category.isPresent()) {
@@ -38,54 +40,44 @@ public class BookController {
 			books = repository.findAll();
 		}
 		
-		return ResponseEntity.ok(BookDecorator.list(books));
+		return BookDecorator.list(books);
 	}
 
 	@GetMapping("/books/{id}")
-	public ResponseEntity<Object> show(@PathVariable Long id) {
-		Optional<Book> book = repository.findById(id);
+	public BookDecorator show(@PathVariable Long id) {
+		Book book = repository.findById(id)
+							  .orElseThrow(() -> new RecordNotFoundException());
 		
-		if (book.isPresent()) {
-			return ResponseEntity.ok(new BookDecorator(book.get()));
-		} else {
-			return new ResponseEntity<>(ResponseMessage.notFound(), HttpStatus.NOT_FOUND);
-		}
+		return new BookDecorator(book);
 	}
 
 	@PostMapping("/books")
-	public  ResponseEntity<Object> create(@RequestBody Book book) {
-		boolean created = interactor.create(book);
-
-		if (created) {
-			return ResponseEntity.ok(new ResponseMessage("Book is successfully created."));
-		} else {
-			return ResponseEntity.badRequest().body(interactor.getErrors());
-		}
+	public  ResponseMessage create(@RequestBody Book book) {
+		if (interactor.create(book))
+			throw new EntityValidationException(interactor.getErrors());
+		
+		return new ResponseMessage("Book is successfully created.");
 	}
 
 	@PutMapping("/books/{id}")
-	public ResponseEntity<Object> update(@RequestBody Book book
+	public ResponseMessage update(@RequestBody Book update
 			, @PathVariable Long id) {
 		
-		Optional<Book> b = repository.findById(id);
+		Book book = repository.findById(id)
+				  			  .orElseThrow(() -> new RecordNotFoundException());
 		
-		if (b.isPresent()) {
-			boolean updated = interactor.update(b.get(), book);
+		if (!interactor.update(book, update))
+			throw new EntityValidationException(interactor.getErrors());
 			
-			if (updated) {
-				return ResponseEntity.ok(new ResponseMessage("Book is successfully updated."));
-			} else {
-				return ResponseEntity.badRequest().body(interactor.getErrors());
-			}
-		} else {
-			return new ResponseEntity<>(ResponseMessage.notFound(), HttpStatus.NOT_FOUND);
-		}
+		return new ResponseMessage("Book is successfully updated.");
 	}
 
 	@DeleteMapping("/books/{id}")
-	public ResponseEntity<Object> destroy(@PathVariable Long id) {
+	public ResponseMessage destroy(@PathVariable Long id) {
 		repository.deleteById(id);
 
-		return ResponseEntity.ok(new ResponseMessage("Book is successfully removed."));
+		return new ResponseMessage("Book is successfully removed.");
 	}
+	
+	
 }

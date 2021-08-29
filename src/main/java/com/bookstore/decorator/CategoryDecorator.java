@@ -6,12 +6,10 @@ import java.util.List;
 
 import com.bookstore.model.Category;
 
-public class CategoryDecorator {
-	private Category subject;
-
+public class CategoryDecorator extends Decorator<Category> {
+	
 	public CategoryDecorator(Category subject) {
-		super();
-		this.subject = subject;
+		super(subject);
 	}
 
 	public String getName() {

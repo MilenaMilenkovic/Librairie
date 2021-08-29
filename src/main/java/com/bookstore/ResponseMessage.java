@@ -22,10 +22,6 @@ public class ResponseMessage implements Serializable {
 		return new Gson().toJson(message);
 	}
 	
-	public static ResponseMessage notFound() {
-		return new ResponseMessage("Record not found.");
-	}
-	
 	public String getMessage() {
 		return message;
 	}
