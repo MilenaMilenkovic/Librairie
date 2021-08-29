@@ -18,11 +18,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
-  implementation 'org.springframework.session:spring-session-core'
+	implementation 'org.springframework.session:spring-session-core'
 	implementation 'org.hibernate:hibernate-core:5.5.6.Final'
 	implementation 'org.hibernate.validator:hibernate-validator:6.0.17.Final'
 	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.0'
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.12.5'
+	implementation 'com.google.code.gson:gson:2.8.8'
 
 	runtimeOnly 'mysql:mysql-connector-java'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

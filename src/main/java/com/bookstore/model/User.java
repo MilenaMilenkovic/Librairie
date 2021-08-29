@@ -26,9 +26,6 @@ public class User {
 	@Email(message = "is invalid")
 	private String email;
 	
-	@Transient
-	private String password;
-	
 	@NotNull
 	private String password_digest;
 	
@@ -55,14 +52,10 @@ public class User {
 	}
 
 	public String getPassword() {
-		return password;
+		return password_digest;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public void setPassword_digest(String password_digest) {
+	public void setPassword(String password_digest) {
 		this.password_digest = password_digest;
 	}
 

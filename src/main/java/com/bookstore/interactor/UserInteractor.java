@@ -18,7 +18,7 @@ public class UserInteractor extends Interactor<User, UserRepository> {
 		subject.setFirst_name(user.getFirst_name());
 		subject.setLast_name(user.getLast_name());
 		subject.setEmail(user.getEmail());
-		subject.setPassword_digest(passwordEncoder.encode(user.getPassword()));
+		subject.setPassword(passwordEncoder.encode(user.getPassword()));
 
 		return this.save();
 	}

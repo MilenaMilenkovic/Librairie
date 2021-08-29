@@ -1,9 +1,10 @@
-package com.bookstore.config;
+package com.bookstore.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,9 +19,6 @@ import com.bookstore.service.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private UserDetailsService userDetailsService;
     
     @Autowired
     private Environment environment;
@@ -31,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     @Bean
+    @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
@@ -38,16 +37,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        
-        authProvider.setUserDetailsService(userDetailsService);
+                
+        authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
     
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/login").permitAll()
-        						.antMatchers("/registration").permitAll();
+    protected void configure(HttpSecurity http) throws Exception {    	
+    	http.authorizeRequests()
+    		.antMatchers(HttpMethod.POST, "/registration")
+    		.permitAll()
+    		.anyRequest().authenticated()
+    		.and()
+    		.formLogin()
+    		.failureHandler(WebSecurityResponse.authenticationFailed())
+    		.successHandler(WebSecurityResponse.authenticationSuccess())
+    		.permitAll()
+    		.and()
+    		.logout()
+            .logoutSuccessHandler(WebSecurityResponse.logoutHandler())
+    		.and()
+    		.exceptionHandling()
+    	    .authenticationEntryPoint(WebSecurityResponse.authenticationEntryPoint());
+    	
         
         if (environment.getActiveProfiles()[0].equals("development")) {
         	http.cors().and().csrf().disable();
