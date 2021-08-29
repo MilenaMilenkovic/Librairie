@@ -21,12 +21,6 @@ public class Category {
 	
 	@ManyToOne
     private Category parent;
-
-	@CreationTimestamp
-	private Timestamp created_at;
-	
-	@UpdateTimestamp
-	private Timestamp updated_at;
 	
 	public Category() {}
 	
@@ -65,11 +59,4 @@ public class Category {
 		this.parent = parent;
 	}
 
-	public Timestamp getUpdated_at() {
-		return updated_at;
-	}
-
-	public void setUpdated_at(Timestamp updated_at) {
-		this.updated_at = updated_at;
-	}
 }
