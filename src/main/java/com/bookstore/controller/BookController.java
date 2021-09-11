@@ -23,8 +23,10 @@ import com.bookstore.controller.exception.EntityValidationException;
 import com.bookstore.controller.exception.RecordNotFoundException;
 import com.bookstore.decorator.BookDecorator;
 import com.bookstore.interactor.BookInteractor;
+import com.bookstore.mailers.NewsletterMailer;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
+import com.bookstore.repository.UserRepository;
 
 @RestController
 public class BookController {
@@ -33,6 +35,12 @@ public class BookController {
 	 
 	@Autowired
 	private BookInteractor interactor;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private NewsletterMailer newsletterService;
 
 	@GetMapping("/books")
 	public List<BookDecorator> index(@RequestParam("page") Optional<Integer> page, @RequestParam Optional<String> category) {	
@@ -63,6 +71,8 @@ public class BookController {
 				
 		if (!interactor.create(category_id, book, coverImage))
 			throw new EntityValidationException(interactor.getErrors());
+		
+		newsletterService.newBookReleaseNotification(userRepository.subscribers(), interactor.getSubject());
 		
 		return new ResponseMessage("Book is successfully created.");
 	}

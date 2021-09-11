@@ -20,7 +20,7 @@ public class BookInteractor extends Interactor<Book, BookRepository>{
 	private CategoryRepository categoryRepository;
 	
 	@Autowired
-	StorageService storageService;
+	private StorageService storageService;
 		
 	public boolean create(Long categoryId, Book book, 
 			Optional<MultipartFile> coverImage) throws IOException {

@@ -29,6 +29,10 @@ public abstract class Interactor<T, R extends JpaRepository<T, Long>> {
 	
 	private Map<String, List<String>> errors;
 	
+	public T getSubject() {
+		return subject;
+	}
+	
 	/*
 	 * Returns validation errors if any
 	 */
