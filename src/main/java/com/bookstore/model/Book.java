@@ -1,6 +1,8 @@
 package com.bookstore.model;
 
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -14,6 +16,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import javax.validation.constraints.NotNull;
 
@@ -86,6 +91,17 @@ public class Book {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public String getCover_image_url() {
+		if (cover_image_data == null)
+			return null;
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Type t = new TypeToken<Map<String, Object>>() {}.getType();
+		Map<String, String> data = gson.fromJson(cover_image_data, t);
+		
+		return data.get("id");
 	}
 
 	public String getCover_image_data() {

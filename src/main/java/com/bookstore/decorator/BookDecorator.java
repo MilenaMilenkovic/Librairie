@@ -7,6 +7,11 @@ import java.util.stream.StreamSupport;
 import com.bookstore.model.Book;
 
 public class BookDecorator extends Decorator<Book> {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8892402062629541917L;
+
 	// TODO: Make this code reusable
 	public static List<BookDecorator> list(Iterable<Book> books) {
 		return StreamSupport.stream(books.spliterator(), false)
@@ -30,9 +35,8 @@ public class BookDecorator extends Decorator<Book> {
 		return subject.getShort_description();
 	}
 	
-	public String getCover_image_url() {
-		// TODO
-		return null;
+	public String getCover_image_url() {	
+		return subject.getCover_image_url();
 	}
 	
 	public CategoryDecorator getCategory() {

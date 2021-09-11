@@ -8,7 +8,7 @@ public class InvalidBookSearchException extends RuntimeException {
 	private static final long serialVersionUID = -2139004505988401347L;
 	
 	public InvalidBookSearchException() {
-		super("Invalid search parameters.");
+		super("Invalid book search parameters.");
 	}
 
 }

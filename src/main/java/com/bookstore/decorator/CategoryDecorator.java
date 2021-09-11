@@ -8,6 +8,11 @@ import com.bookstore.model.Category;
 
 public class CategoryDecorator extends Decorator<Category> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 112241122677765263L;
+
 	public CategoryDecorator(Category subject) {
 		super(subject);
 	}

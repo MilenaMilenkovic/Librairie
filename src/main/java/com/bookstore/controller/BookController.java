@@ -1,18 +1,19 @@
 package com.bookstore.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bookstore.ResponseMessage;
 import com.bookstore.controller.exception.EntityValidationException;
@@ -51,22 +52,25 @@ public class BookController {
 		return new BookDecorator(book);
 	}
 
-	@PostMapping("/books")
-	public  ResponseMessage create(@RequestBody Book book) {
-		if (interactor.create(book))
+	@PostMapping(value = "/books", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseMessage create(Book book, Long category_id,
+			@RequestParam("cover_image") Optional<MultipartFile> coverImage) throws IOException {
+				
+		if (!interactor.create(category_id, book, coverImage))
 			throw new EntityValidationException(interactor.getErrors());
 		
 		return new ResponseMessage("Book is successfully created.");
 	}
 
-	@PutMapping("/books/{id}")
-	public ResponseMessage update(@RequestBody Book update
-			, @PathVariable Long id) {
-		
+	@PutMapping(value = "/books/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseMessage update(@PathVariable Long id,
+			Book update, Optional<Long> category_id, 
+			@RequestParam("cover_image") Optional<MultipartFile> coverImage) throws IOException {
+				
 		Book book = repository.findById(id)
 				  			  .orElseThrow(() -> new RecordNotFoundException());
 		
-		if (!interactor.update(book, update))
+		if (!interactor.update(book, update, category_id, coverImage))
 			throw new EntityValidationException(interactor.getErrors());
 			
 		return new ResponseMessage("Book is successfully updated.");
