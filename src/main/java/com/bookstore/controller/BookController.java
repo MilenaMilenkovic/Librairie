@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,13 +35,15 @@ public class BookController {
 	private BookInteractor interactor;
 
 	@GetMapping("/books")
-	public List<BookDecorator> index(@RequestParam Optional<String> category) {
-		Iterable<Book> books;
+	public List<BookDecorator> index(@RequestParam("page") Optional<Integer> page, @RequestParam Optional<String> category) {	
+		Iterable<Book> books;	
+		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 		
 		if (category.isPresent()) {
-			books = repository.categorized(category.get());
+			books = repository.categorized(category.get(), paging);
 		} else {
-			books = repository.findAll();
+			Page<Book> bookPage = repository.findAll(paging);		
+			books = bookPage.getContent();
 		}
 		
 		return BookDecorator.list(books);

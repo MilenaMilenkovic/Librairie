@@ -1,5 +1,6 @@
 package com.bookstore.query.mysql8;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,11 @@ public class CategoryHierarhyQuery {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	public List<Category> call() {
-		return entityManager.createNativeQuery(query(), Category.class).getResultList();
+		String nativeQuery = query();
+		
+		if (nativeQuery == null) return new ArrayList<Category>();
+		
+		return entityManager.createNativeQuery(nativeQuery, Category.class).getResultList();
 	}
 	
 	private List<Category> categoriesScope() {
@@ -37,6 +42,10 @@ public class CategoryHierarhyQuery {
 	
 
 	private String query() {
+		String cteQuery = childrenHierarhyRecursiveCTEs();
+		
+		if (cteQuery == null) return null;
+		
 		return childrenHierarhyRecursiveCTEs() +
 				"SELECT  * FROM " +
 				cteQueries().stream()
@@ -45,8 +54,12 @@ public class CategoryHierarhyQuery {
 	}
 
 	private String childrenHierarhyRecursiveCTEs() {
+		List<HierarhyQuery> hierarhyQueries = cteQueries();
+		
+		if (hierarhyQueries.isEmpty()) return null;
+		
         return "WITH RECURSIVE " +
-        		cteQueries().stream()
+        	hierarhyQueries.stream()
         					.map(cte -> cte.getCTE())
         					.collect(Collectors.joining(", "));
 	}
