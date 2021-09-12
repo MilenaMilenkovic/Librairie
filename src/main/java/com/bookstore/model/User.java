@@ -13,6 +13,8 @@ import javax.persistence.UniqueConstraint;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import constraints.Password;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
@@ -28,8 +30,10 @@ public class User {
 	@Email(message = "is invalid")
 	private String email;
 	
+	@Column(name = "password_digest")
 	@NotNull
-	private String password_digest;
+	@Password
+	private String password;
 	
 	private String first_name;
 	
@@ -54,11 +58,11 @@ public class User {
 	}
 
 	public String getPassword() {
-		return password_digest;
+		return password;
 	}
 
-	public void setPassword(String password_digest) {
-		this.password_digest = password_digest;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getFirst_name() {

@@ -14,12 +14,16 @@ public class UserInteractor extends Interactor<User, UserRepository> {
     private PasswordEncoder passwordEncoder;
 
 	public boolean create(User user) {
+		subject = user;
+		// Validate passed attributes
+		if (!this.isValid()) return false;
+		
 		subject = new User();
 		subject.setFirst_name(user.getFirst_name());
 		subject.setLast_name(user.getLast_name());
 		subject.setEmail(user.getEmail());
 		subject.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		return this.save();
+		return this.commit();
 	}
 }

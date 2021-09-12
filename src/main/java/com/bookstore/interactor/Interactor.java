@@ -41,12 +41,19 @@ public abstract class Interactor<T, R extends JpaRepository<T, Long>> {
 	}
 	
 	/*
-	 *  Manages Hibernate validations before saving
+	 *  Manages Hibernate & SQL validations before saving
 	 */
 	public boolean save() {
 		if (!this.isValid())
 			return false;
 
+		return commit();
+	}
+	
+	/*
+	 *  Manages SQL validations before saving
+	 */
+	public boolean commit() {
 		try {
 			repository.save(subject);
 		} catch (DataIntegrityViolationException e) {
@@ -57,8 +64,11 @@ public abstract class Interactor<T, R extends JpaRepository<T, Long>> {
 		}
 		return true;
 	}
-		
-	private boolean isValid() {
+	
+	/*
+	 *  Collects Hibernate validation errors & returns presence of errors
+	 */
+	protected boolean isValid() {
 		validate();
 		return this.errors.isEmpty();
 	}
@@ -93,7 +103,7 @@ public abstract class Interactor<T, R extends JpaRepository<T, Long>> {
 	private void applyUniquenessConstraintIfApplicable(Field f, DataIntegrityViolationException e) {
 		if (e.getMostSpecificCause().getMessage().contains("Duplicate entry")) {
 			if (e.getMessage().contains(f.getName())) {
-				errors.put(f.getName(), Arrays.asList("already exists."));
+				errors.put(f.getName(), Arrays.asList("has already been taken"));
 			}
 		}
 	}
