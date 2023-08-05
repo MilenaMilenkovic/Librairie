@@ -19,7 +19,8 @@ public class CategoryHierarhyQuery {
 	
 	private EntityManager entityManager;
 
-	public CategoryHierarhyQuery(String categoryName, CategoryRepository repository, EntityManager entityManager) {
+	public CategoryHierarhyQuery(String categoryName, 
+			CategoryRepository repository, EntityManager entityManager) {
 		super();
 		this.categoryName = categoryName;
 		this.repository = repository;
@@ -33,7 +34,8 @@ public class CategoryHierarhyQuery {
 		
 		if (nativeQuery == null) return new ArrayList<Category>();
 		
-		return entityManager.createNativeQuery(nativeQuery, Category.class).getResultList();
+		return entityManager.createNativeQuery(nativeQuery, Category.class)
+				            .getResultList();
 	}
 	
 	private List<Category> categoriesScope() {
@@ -88,7 +90,8 @@ public class CategoryHierarhyQuery {
 			String cte = this.getCTEName();
 
 			return cte + " AS (" +
-		    		   "  SELECT id, name, parent_id from categories WHERE id = " + this.categoryId +
+		    		   "  SELECT id, name, parent_id from categories " + 
+			           "  WHERE id = " + this.categoryId +
 		    		   "  UNION ALL" +
 		    		   "  SELECT c.id, c.name, c.parent_id FROM categories c JOIN " + cte +
 		    		   "  ON " + cte + ".id = c.parent_id" +

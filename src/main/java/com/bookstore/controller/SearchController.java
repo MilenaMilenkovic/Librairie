@@ -21,7 +21,8 @@ public class SearchController {
 	private BookRepository repository;
 	
 	@GetMapping("/books/search")
-	public List<BookDecorator> books(@RequestParam("page") Optional<Integer> page, @RequestParam String qk, @RequestParam String q) {
+	public List<BookDecorator> books(@RequestParam("page") Optional<Integer> page, 
+			@RequestParam String qk, @RequestParam String q) {
 		Iterable<Book> books;
 		
 		try {
@@ -36,3 +37,4 @@ public class SearchController {
 	}
 
 }
+

@@ -19,7 +19,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "index_users_on_email", columnNames = "email") })
+@Table(name = "users", 
+	uniqueConstraints = { @UniqueConstraint(name = "index_users_on_email", 
+											columnNames = "email") })
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

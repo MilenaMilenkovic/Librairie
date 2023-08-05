@@ -43,7 +43,8 @@ public class BookController {
 	private NewsletterMailer newsletterService;
 
 	@GetMapping("/books")
-	public List<BookDecorator> index(@RequestParam("page") Optional<Integer> page, @RequestParam Optional<String> category) {	
+	public List<BookDecorator> index(@RequestParam("page") Optional<Integer> page, 
+			@RequestParam Optional<String> category) {	
 		Iterable<Book> books;	
 		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 		

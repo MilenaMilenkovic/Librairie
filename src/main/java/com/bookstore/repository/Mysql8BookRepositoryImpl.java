@@ -37,7 +37,9 @@ public class Mysql8BookRepositoryImpl implements Mysql8BookRepository {
 	public Iterable<Book> search(String qk, String q, Pageable pageable) throws NoSuchFieldException {
 		String column = Book.class.getDeclaredField(qk).getName();
 
-    	return entityManager.createNativeQuery("SELECT * FROM books WHERE MATCH ("+ column +") AGAINST (:q) LIMIT :offset, :limit", Book.class)
+    	return entityManager.createNativeQuery(""
+    			+ "SELECT * FROM books "
+    			+ "WHERE MATCH ("+ column +") AGAINST (:q) LIMIT :offset, :limit", Book.class)
     						.setParameter("q", q)
     						.setParameter("limit", pageable.getPageSize())
     						.setParameter("offset", pageable.getOffset())
@@ -54,11 +56,14 @@ public class Mysql8BookRepositoryImpl implements Mysql8BookRepository {
 	@Override
     @Transactional(readOnly = true)
 	public Iterable<Book> categorized(String categoryName, Pageable pageable) {    	
-		List<Category> categories = new CategoryHierarhyQuery(categoryName, categoryRepository, entityManager).call();
+		List<Category> categories = new CategoryHierarhyQuery(
+				categoryName, categoryRepository, entityManager).call();
 		
 		if (categories.isEmpty()) return new ArrayList<Book>();
 
-        return entityManager.createNativeQuery("SELECT * FROM books WHERE category_id IN (:categories) LIMIT :offset, :limit", Book.class)
+        return entityManager.createNativeQuery("SELECT * FROM books "
+        		+ "WHERE category_id IN (:categories) "
+        		+ "LIMIT :offset, :limit", Book.class)
 				.setParameter("categories", categories)
 				.setParameter("limit", pageable.getPageSize())
 				.setParameter("offset", pageable.getOffset())

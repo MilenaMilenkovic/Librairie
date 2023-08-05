@@ -50,7 +50,8 @@ public class Book {
 	
 	public Book() {}
 	
-	public Book(String author, String title, String short_description, Category category) {
+	public Book(String author, String title, 
+			String short_description, Category category) {
 		super();
 		this.author = author;
 		this.title = title;
