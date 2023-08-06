@@ -5,8 +5,7 @@ import java.util.List;
 
 import com.bookstore.model.Book;
 import com.bookstore.model.Category;
-
-import com.bookstore.query.mysql8.CategoryHierarhyQuery;
+import com.bookstore.repository.mysql8.CategoryHierarhyQueryRepositoryImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,9 +20,9 @@ public class Mysql8BookRepositoryImpl implements Mysql8BookRepository {
 	
     @Autowired
     private EntityManager entityManager;
-
+    
     @Autowired
- 	private CategoryRepository categoryRepository;
+    private CategoryHierarhyQueryRepositoryImpl query;
     
 	@Override
     @Transactional(readOnly = true)
@@ -55,9 +54,8 @@ public class Mysql8BookRepositoryImpl implements Mysql8BookRepository {
 	@SuppressWarnings("unchecked")
 	@Override
     @Transactional(readOnly = true)
-	public Iterable<Book> categorized(String categoryName, Pageable pageable) {    	
-		List<Category> categories = new CategoryHierarhyQuery(
-				categoryName, categoryRepository, entityManager).call();
+	public Iterable<Book> categorized(String categoryName, Pageable pageable) {   		
+		List<Category> categories = query.withCategoryName(categoryName).call();
 		
 		if (categories.isEmpty()) return new ArrayList<Book>();
 

@@ -1,4 +1,4 @@
-package com.bookstore.query.mysql8;
+package com.bookstore.repository.mysql8;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,27 +6,29 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstore.model.Category;
 import com.bookstore.repository.CategoryRepository;
 
-public class CategoryHierarhyQuery {
+public class CategoryHierarhyQueryRepositoryImpl {
 	
 	private String categoryName;
+		
+	@Autowired
+    private EntityManager entityManager;
 	
+	@Autowired
 	private CategoryRepository repository;
 	
-	private EntityManager entityManager;
 
-	public CategoryHierarhyQuery(String categoryName, 
-			CategoryRepository repository, EntityManager entityManager) {
-		super();
+	public CategoryHierarhyQueryRepositoryImpl withCategoryName(String categoryName) {
 		this.categoryName = categoryName;
-		this.repository = repository;
-		this.entityManager = entityManager;
+		
+		return this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	public List<Category> call() {
