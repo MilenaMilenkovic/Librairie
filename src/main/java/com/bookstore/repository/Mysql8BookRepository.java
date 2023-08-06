@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.bookstore.model.Book;
-import com.bookstore.model.Category;
 
 public interface Mysql8BookRepository {
-	// Temporary implementation
-	@Query(value = "select b from Book b where author MATCH (:author)", nativeQuery = true)
-	public List<Book> search(@Param("author") String author, Pageable pageable);
+
+	@Query(value = "select * from books where match(author) against(:author)", nativeQuery = true)
+	public List<Book> searchAuthor(@Param("author") String author, Pageable pageable);
+	
+	@Query(value = "select * from books where match(title) against(:title)", nativeQuery = true)
+	public List<Book> searchTitle(@Param("title") String title, Pageable pageable);
+	
+	@Query(value = "select * from books where match(short_description) against(:text)", nativeQuery = true)
+	public List<Book> searchShortDescription(@Param("text") String text, Pageable pageable);
 }

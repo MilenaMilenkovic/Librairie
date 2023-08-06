@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bookstore.controller.exception.InvalidBookSearchException;
 import com.bookstore.decorator.BookDecorator;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
@@ -26,7 +27,19 @@ public class SearchController {
 		
 		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 			
-		books = repository.search(q, paging);
+		switch(qk) {
+		case "author":
+			books = repository.searchAuthor(q, paging);
+			break;
+		case "title":
+			books = repository.searchTitle(q, paging);
+			break;
+		case "short_description":
+			books = repository.searchShortDescription(q, paging);
+			break;
+		default:
+			throw new InvalidBookSearchException();
+		}
 		
 		return BookDecorator.list(books);
 	}
