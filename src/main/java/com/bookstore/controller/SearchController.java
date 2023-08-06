@@ -1,5 +1,6 @@
 package com.bookstore.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,19 @@ public class SearchController {
 		
 		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 			
-		books = repository.search(q, paging);
+		switch(qk) {
+		case "author":
+			books = repository.searchAuthor(q, paging);
+			break;
+		case "title":
+			books = repository.searchTitle(q, paging);
+			break;
+		case "short_description":
+			books = repository.searchShortDescription(q, paging);
+			break;
+		default:
+			return new ArrayList<BookDecorator>();
+		}
 		
 		return BookDecorator.list(books);
 	}
