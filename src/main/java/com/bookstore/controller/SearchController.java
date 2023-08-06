@@ -1,5 +1,6 @@
 package com.bookstore.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookstore.controller.exception.InvalidBookSearchException;
 import com.bookstore.decorator.BookDecorator;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
@@ -25,12 +25,20 @@ public class SearchController {
 			@RequestParam String qk, @RequestParam String q) {
 		Iterable<Book> books;
 		
-		try {
-			Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
+		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 			
-			books = repository.search(qk, q, paging);
-		} catch (NoSuchFieldException e) {
-			throw new InvalidBookSearchException();
+		switch(qk) {
+		case "author":
+			books = repository.searchAuthor(q, paging);
+			break;
+		case "title":
+			books = repository.searchTitle(q, paging);
+			break;
+		case "short_description":
+			books = repository.searchShortDescription(q, paging);
+			break;
+		default:
+			return new ArrayList<BookDecorator>();
 		}
 		
 		return BookDecorator.list(books);
