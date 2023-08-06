@@ -1,6 +1,7 @@
 package com.bookstore.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +26,10 @@ import com.bookstore.decorator.BookDecorator;
 import com.bookstore.interactor.BookInteractor;
 import com.bookstore.mailers.NewsletterMailer;
 import com.bookstore.model.Book;
+import com.bookstore.model.Category;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.UserRepository;
+import com.bookstore.repository.mysql8.CategoryHierarhyQueryRepositoryImpl;
 
 @RestController
 public class BookController {
@@ -41,6 +44,9 @@ public class BookController {
 	
 	@Autowired
 	private NewsletterMailer newsletterService;
+	
+	@Autowired
+    private CategoryHierarhyQueryRepositoryImpl hierarhyQuery;
 
 	@GetMapping("/books")
 	public List<BookDecorator> index(@RequestParam("page") Optional<Integer> page, 
@@ -49,7 +55,11 @@ public class BookController {
 		Pageable paging = PageRequest.of(page.orElse(0), BookRepository.PAGE_SIZE);
 		
 		if (category.isPresent()) {
-			books = repository.categorized(category.get(), paging);
+			List<Category> categories = hierarhyQuery.withCategoryName(category.get()).call();
+			
+			if (categories.isEmpty()) return new ArrayList<BookDecorator>();
+			
+			books = repository.categorized(categories, paging);
 		} else {
 			Page<Book> bookPage = repository.findAll(paging);		
 			books = bookPage.getContent();
